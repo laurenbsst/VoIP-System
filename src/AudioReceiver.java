@@ -21,7 +21,7 @@ public class AudioReceiver implements Runnable {
         //***************************************************
 
         //***************************************************
-        //Open a socket to receive from on port PORT
+        //Open a socket to receive from PORT
 
         //DatagramSocket receiving_socket;
         try{
@@ -41,7 +41,7 @@ public class AudioReceiver implements Runnable {
 
         while (running){
             try{
-                //Receive a DatagramPacket (note that the string cant be more than 80 chars)
+                //Receive a DatagramPacket (note that the string can't be more than 80 chars)
                 byte[] buffer = new byte[516];
                 DatagramPacket encryptedPacket = new DatagramPacket(buffer, 0, 516);
                 receiving_socket.receive(encryptedPacket);

@@ -20,7 +20,7 @@ public class AudioSender implements Runnable {
         //IP ADDRESS to send to
         InetAddress clientIP = null;
         try {
-            clientIP = InetAddress.getByName("139.222.98.148");  //CHANGE localhost to IP or NAME of client machine
+            clientIP = InetAddress.getByName("localhost");  //CHANGE localhost to IP or NAME of client machine
             //clientIP = InetAddress.getByName("localhost");
         } catch (UnknownHostException e) {
             System.out.println("ERROR: AudioSender: Could not find client IP");
