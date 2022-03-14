@@ -9,7 +9,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 public class AudioSender implements Runnable {
-    static DatagramSocket sending_socket;
+    static DatagramSocket4 sending_socket;
 
     public void start(){
         Thread thread = new Thread(this);
@@ -39,7 +39,7 @@ public class AudioSender implements Runnable {
 
         //DatagramSocket sending_socket;
         try{
-            sending_socket = new DatagramSocket();
+            sending_socket = new DatagramSocket4();
         } catch (SocketException e){
             System.out.println("ERROR: AudioSender: Could not open UDP socket to send from.");
             e.printStackTrace();

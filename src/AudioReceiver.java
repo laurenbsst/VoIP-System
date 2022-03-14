@@ -1,6 +1,7 @@
 import CMPC3M06.AudioPlayer;
 import uk.ac.uea.cmp.voip.DatagramSocket2;
 import uk.ac.uea.cmp.voip.DatagramSocket3;
+import uk.ac.uea.cmp.voip.DatagramSocket4;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.net.*;
@@ -8,7 +9,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 public class AudioReceiver implements Runnable {
-    static DatagramSocket receiving_socket;
+    static DatagramSocket4 receiving_socket;
     static AudioPlayer player;
 
     public void start(){
@@ -27,7 +28,7 @@ public class AudioReceiver implements Runnable {
 
         //DatagramSocket receiving_socket;
         try{
-            receiving_socket = new DatagramSocket(PORT);
+            receiving_socket = new DatagramSocket4(PORT);
             player = new AudioPlayer();
         } catch (SocketException | LineUnavailableException e){
             System.out.println("ERROR: AudioReceiver: Could not open UDP socket to receive from.");
