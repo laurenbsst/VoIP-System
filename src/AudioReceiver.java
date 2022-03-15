@@ -7,9 +7,10 @@ import javax.sound.sampled.LineUnavailableException;
 import java.net.*;
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class AudioReceiver implements Runnable {
-    static DatagramSocket4 receiving_socket;
+    static DatagramSocket receiving_socket;
     static AudioPlayer player;
 
     public void start(){
@@ -28,7 +29,7 @@ public class AudioReceiver implements Runnable {
 
         //DatagramSocket receiving_socket;
         try{
-            receiving_socket = new DatagramSocket4(PORT);
+            receiving_socket = new DatagramSocket(PORT);
             player = new AudioPlayer();
         } catch (SocketException | LineUnavailableException e){
             System.out.println("ERROR: AudioReceiver: Could not open UDP socket to receive from.");
@@ -48,11 +49,16 @@ public class AudioReceiver implements Runnable {
                 byte[] buffer = new byte[516];
                 DatagramPacket encryptedPacket = new DatagramPacket(buffer, 0, 516);
                 receiving_socket.receive(encryptedPacket);
-                ByteBuffer byteBuffer = ByteBuffer.wrap(buffer);
+
+                byte[] packetAudio = encryptedPacket.getData();
+                byte[] authenticationKey = Arrays.copyOfRange(packetAudio, 1,2);
+                byte[] audioToPlay = Arrays.copyOfRange(packetAudio, 0,packetAudio.length);
+                audioToPlay[1] = 0;
+                ByteBuffer byteBuffer = ByteBuffer.wrap(audioToPlay);
 
                 int key = 150;
 
-                System.out.println(byteBuffer.getInt());
+                //System.out.println(byteBuffer.getInt(0));
                 byte[] arr = byteBuffer.array();
 
                 ByteBuffer unwrapDecrypt = ByteBuffer.allocate(buffer.length);
@@ -64,9 +70,15 @@ public class AudioReceiver implements Runnable {
                     unwrapDecrypt.putInt(fourByte);
                 }
                 byte[] decryptedBlock = unwrapDecrypt.array();
+                boolean authenticated = false;
 
-//                System.out.println(buffer[0]);
-                player.playBlock(decryptedBlock);
+                if(decryptedBlock[1] == 10){
+                    authenticated = true;
+                    player.playBlock(decryptedBlock);
+                }
+                else{
+                    System.out.println("Sender not authenticated!");
+                }
 
             } catch (IOException e){
                 System.out.println("ERROR: AudioReceiver: Some random IO error occurred!");

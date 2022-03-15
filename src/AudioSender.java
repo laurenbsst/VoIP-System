@@ -9,7 +9,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 public class AudioSender implements Runnable {
-    static DatagramSocket4 sending_socket;
+    static DatagramSocket sending_socket;
 
     public void start(){
         Thread thread = new Thread(this);
@@ -39,7 +39,7 @@ public class AudioSender implements Runnable {
 
         //DatagramSocket sending_socket;
         try{
-            sending_socket = new DatagramSocket4();
+            sending_socket = new DatagramSocket();
         } catch (SocketException e){
             System.out.println("ERROR: AudioSender: Could not open UDP socket to send from.");
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class AudioSender implements Runnable {
                 ByteBuffer unwrapEncrypt = ByteBuffer.allocate(buffer.length);
                 counter++;
 
-                ByteBuffer byteBuffer = ByteBuffer.wrap(buffer);//.putInt(counter);
+                ByteBuffer byteBuffer = ByteBuffer.wrap(buffer);//.putInt(1);
 
                 int key = 150;
 
@@ -86,8 +86,16 @@ public class AudioSender implements Runnable {
                 }
                 byte[] encryptedBlock = unwrapEncrypt.array();
 
+                short authenticationKey = 10;
+                ByteBuffer voipPacket = ByteBuffer.allocate(516);
+
+                voipPacket.putShort(authenticationKey);
+                voipPacket.put(encryptedBlock);
+
+                byte[] packet = voipPacket.array();
+
                 //Make a DatagramPacket from it, with client address and port number
-                DatagramPacket encryptedPacket = new DatagramPacket(encryptedBlock, encryptedBlock.length, clientIP, PORT);
+                DatagramPacket encryptedPacket = new DatagramPacket(packet, packet.length, clientIP, PORT);
 
                 //Send it
                 sending_socket.send(encryptedPacket);
