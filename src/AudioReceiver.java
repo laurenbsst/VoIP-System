@@ -72,7 +72,7 @@ public class AudioReceiver implements Runnable {
                 byte[] decryptedBlock = unwrapDecrypt.array();
                 boolean authenticated = false;
 
-                if(decryptedBlock[1] == 10){
+                if(buffer[1] == 10){
                     authenticated = true;
                     player.playBlock(decryptedBlock);
                 }
